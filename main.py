@@ -65,6 +65,7 @@ print("min: ", np.min(trainImages2D))
 print("mean: ", np.mean(trainImages2D))
 print("std: ", np.std(trainImages2D))
 
+  
 train_images_resampled, train_labels_resampled = TomekLinks(sampling_strategy='majority').fit_resample(trainImages2D, trainLabels)
 print(train_images_resampled.shape)
 
@@ -83,22 +84,24 @@ hyperparams = {
 }
 
 ### ANTRENAREA MODELULUI MLPCassifier din cadrul scikit-learn
-#mlpClassifierModel = MLPClassifier(hidden_layer_sizes=(256, 256), max_iter=100, alpha=1e-4,
-#                                   solver='adam', verbose=10, tol=1e-4, random_state=1,
-#                                   learning_rate_init=0.001)
+mlpClassifierModel = MLPClassifier(hidden_layer_sizes=(256, 256), max_iter=100, alpha=1e-4,
+                                   solver='adam', verbose=10, tol=1e-4, random_state=1,
+                                   learning_rate_init=0.001)
 
-#classifier = GridSearchCV(mlpClassifierModel, hyperparams, n_jobs=-1, verbose=10)
-#classifier.fit(train_images_resampled, train_labels_resampled)
+classifier = GridSearchCV(mlpClassifierModel, hyperparams, n_jobs=-1, verbose=10)
+classifier.fit(train_images_resampled, train_labels_resampled)
 
-#print("Cei mai buni parametrii: ", classifier.best_params_)
-#print("Cel mai bun scor: ", classifier.best_score_)
+print("Cei mai buni parametrii: ", classifier.best_params_)
+print("Cel mai bun scor: ", classifier.best_score_)
 
 #validationPredictions = classifier.predict(validationImages2D)
+bestModel = classifier.best_estimator_
+validationPredictions = bestModel.predict_proba(validationImages2D)
 #print('Rezultat pe validare:')
 #print(classification_report(validationLabels, validationPredictions))
 
 ### ANTRENAREA MODELULUI SVC din cadrul scikit-learn
-#svcModel = SVC(kernel='linear', class_weight='balanced', verbose=10, max_iter=500)
+#svcModel = SVC(kernel='rbf', verbose=3, max_iter=-1, C=1, gamma=1e-3)
 #svcModel.fit(train_images_resampled, train_labels_resampled)
 
 #validationPredictions = svcModel.predict(validationImages2D)
@@ -106,32 +109,46 @@ hyperparams = {
 #print(classification_report(validationLabels, validationPredictions))
 
 ## Hyperparameters pentru RandomForestClassifier
-hyperparams = {
-    'n_estimators': [100, 200, 300],
-    'max_depth': [10, 20, 30],
-    'min_samples_split': [2, 5, 10],
-    'max_features': ['auto', 'sqrt', 'log2'],
-}
+#hyperparams = {
+#    'n_estimators': [100, 200, 300],
+#    'max_depth': [10, 20, 30],
+#    'min_samples_split': [2, 5, 10],
+#    'max_features': ['auto', 'sqrt', 'log2'],
+#}
 
-
+#hyperparams = {
+#
+#}
 ## ANTRENAREA MODELULUI RandomForestClassifier din cadrul scikit-learn
-rfcModel = RandomForestClassifier(n_estimators=400, verbose=10, n_jobs=-1,
-                                  max_features=100, max_depth=20)
-rfcModel.fit(train_images_resampled, train_labels_resampled)
+#rfcModel = RandomForestClassifier(n_estimators=400, verbose=10, n_jobs=-1,
+#                                  max_features=150, max_depth=20)
+#rfcModel.fit(train_images_resampled, train_labels_resampled)
 
-#classifier = GridSearchCV(rfcModel, hyperparams, n_jobs=-1, verbose=10, cv=2)
+#classifier = GridSearchCV(rfcModel, hyperparams, n_jobs=-1, verbose=10, cv=5)
 #classifier.fit(train_images_resampled, train_labels_resampled)
 
 #print("Cei mai buni parametrii: ", classifier.best_params_)
 #print("Cel mai bun scor: ", classifier.best_score_)
 
-validationPredictions = rfcModel.predict_proba(validationImages2D)
+#validationPredictions = rfcModel.predict_proba(validationImages2D)
+#bestModel = classifier.best_estimator_
+#validationPredictions = bestModel.predict_proba(validationImages2D)
 for i in range(2, 6):
     valPred = (validationPredictions[:, 1] >= i / 10).astype(int)
     print('Rezultat pe validare:' + str(i))
     print(classification_report(validationLabels, valPred))
     print(confusion_matrix(validationLabels, valPred))
-valPred = (validationPredictions[:, 1] >= 0.6).astype(int)
-print('Rezultat pe validare:')
-print(classification_report(validationLabels, valPred))
+#valPred = (validationPredictions[:, 1] >= 0.4).astype(int)
+
+#print('Rezultat pe validare:')
+#print(classification_report(validationLabels, valPred))
+#print(confusion_matrix(validationLabels, valPred))
+
+#testPredictions = rfcModel.predict_proba(testImages2D)
+#testPred = (testPredictions[:, 1] >= 0.35).astype(int)
+#with open ('predictions.txt', 'w') as f:
+#    f.write('id,class\n')
+#    for i in range(0, testImagesNumber):
+#        f.write(testLines[i][0:6] + ',' + str(testPred[i]) + '\n')
+
 
