@@ -1,8 +1,6 @@
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
 
-from sklearn.svm import SVC
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 
@@ -76,10 +74,10 @@ print ("Numarul imaginilor de antrenare dupa TomekLinks: ", len(train_labels_res
 ##### MLPClassifier #####
 # 1. Hiperparametrii
 hyperparams_mlp = {
-    "hidden_layer_sizes": [(25, 25, 25), (100, 100), (256, 256)], #"hidden_layer_sizes": [(25, 25, 25), (100, 100), (256, 256)]
-    "activation": ["relu"], #"activation": ["relu", "tanh"],
-    "solver": ["adam"], #"solver": ["adam", "lbfgs"],
-    "alpha": [0.0001] #"alpha": [0.0001, 0.001]
+    "hidden_layer_sizes": [(25, 25, 25), (100, 100), (256, 256)],
+    "activation": ["relu", "tanh"],
+    "solver": ["adam", "lbfgs"],
+    "alpha": [0.0001, 0.001]
 }
 
 # 2. Antrenarea modelului
@@ -87,7 +85,7 @@ mlp_classifier_model = MLPClassifier(hidden_layer_sizes=(256, 256), max_iter=100
                                    solver="adam", verbose=True, tol=0.0001, random_state=1,
                                    learning_rate_init=0.001)
 
-mlp_classifier_CV = GridSearchCV(mlp_classifier_model, hyperparams_mlp, n_jobs=-1, verbose=4, cv=2)
+mlp_classifier_CV = GridSearchCV(mlp_classifier_model, hyperparams_mlp, n_jobs=-1, verbose=4, cv=5)
 mlp_classifier_CV.fit(train_images_resampled, train_labels_resampled)
 
 # 3. Evaluarea modelului
@@ -107,10 +105,10 @@ print(confusion_matrix(validation_labels, validation_predictions))
 ##### RandomForestClassifier #####
 # 1. Hiperparametrii 
 hyperparams_rfc = {
-    "n_estimators": [200], #"n_estimators": [100, 200, 300],
-    "max_depth": [20], #"max_depth": [10, 20, 30],
-    "min_samples_split": [10], #"min_samples_split": [2, 5, 10],
-    "max_features": ["sqrt"], #"max_features": ["auto", "sqrt", "log2"],
+    "n_estimators": [100, 200, 300],
+    "max_depth": [10, 20, 30],
+    "min_samples_split": [2, 5, 10],
+    "max_features": ["auto", "sqrt", "log2"],
 }
 
 # 2. Antrenarea modelului
