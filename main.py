@@ -93,7 +93,6 @@ print("Cei mai buni parametrii: ", mlp_classifier_CV.best_params_)
 print("Cel mai bun scor: ", mlp_classifier_CV.best_score_)
 
 validation_predictions = mlp_classifier_CV.predict(validation_images_2D)
-best_model = mlp_classifier_CV.best_estimator_
 
 # 4. Raportul de evaluare si matricea de confuzie
 print("Rezultat pe validare MLP:")
