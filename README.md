@@ -58,4 +58,4 @@ The dataset is highly unbalanced with a rating of around **20:1**. I have previo
 
 The public score I got on the Kaggle competition is a mere **0.57558**, atleast placing me in the top 25%.
 
-## **Final score will be posted on 12th of April.**
+## **Final score: 0.57324, top 61.**
